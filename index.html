@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8 Days of Love</title>
+  <style>
+    :root {
+      --bg-1: #ffe8ec;
+      --bg-2: #ffd1dc;
+      --accent: #d72660;
+      --accent-dark: #a21545;
+      --card: rgba(255, 255, 255, 0.78);
+      --text: #35121f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 20%, #fff6f8 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .hearts-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -40px;
+      color: rgba(215, 38, 96, 0.35);
+      animation: floatUp linear forwards;
+      user-select: none;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      12% {
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-120vh) rotate(260deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 42px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 18px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      border-radius: 24px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 10px 30px rgba(160, 35, 78, 0.12);
+    }
+
+    h1 {
+      margin: 6px 0 8px;
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      color: var(--accent-dark);
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+    }
+
+    .gift-grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .gift-box {
+      border: none;
+      border-radius: 20px;
+      padding: 16px;
+      background: linear-gradient(160deg, #fff 5%, #ffe3ec 95%);
+      box-shadow: 0 8px 22px rgba(142, 23, 69, 0.16);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .gift-visual {
+      position: relative;
+      height: 110px;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #fff8fb, #ffd7e5);
+      border: 1px solid rgba(173, 35, 87, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .gift-emoji {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    .gift-lock-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(32, 7, 17, 0.44);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      gap: 6px;
+      font-weight: 700;
+      transition: opacity 0.25s ease;
+    }
+
+    .gift-box:not(.locked) .gift-lock-overlay {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .lock-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      color: #8f1e49;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .gift-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(142, 23, 69, 0.22);
+    }
+
+    .gift-box.locked {
+      filter: grayscale(0.15);
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    .gift-grid .gift-box:last-child {
+      justify-self: center;
+      width: min(360px, 100%);
+    }
+
+    .gift-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: #6d1536;
+      margin-bottom: 8px;
+    }
+
+    .gift-status {
+      font-size: 0.95rem;
+      margin: 6px 0;
+      font-weight: 700;
+      color: #b21f56;
+    }
+
+    .gift-countdown {
+      margin-top: 8px;
+      font-size: 0.87rem;
+      font-weight: 700;
+      color: #7c1b43;
+    }
+
+    .photo-strip-wrap {
+      margin-top: 22px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .photo-strip {
+      display: flex;
+      gap: 12px;
+      width: max-content;
+      animation: scrollPics 28s linear infinite;
+    }
+
+    .photo-strip img {
+      width: 180px;
+      height: 120px;
+      border-radius: 14px;
+      object-fit: contain;
+      object-position: center;
+      background: #fff3f8;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 6px 15px rgba(124, 17, 58, 0.18);
+    }
+
+    .photo-strip img.is-portrait {
+      width: 110px;
+      height: 150px;
+    }
+
+    .photo-strip img.is-landscape {
+      width: 190px;
+      height: 110px;
+    }
+
+    @keyframes scrollPics {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(35, 7, 18, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 20;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .lock-popup {
+      position: fixed;
+      left: 50%;
+      top: 24px;
+      transform: translateX(-50%) translateY(-12px) scale(0.98);
+      background: linear-gradient(160deg, #fff8fc 0%, #ffdce9 100%);
+      color: #7c173d;
+      border: 2px solid rgba(171, 39, 88, 0.5);
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-weight: 800;
+      box-shadow: 0 16px 34px rgba(46, 8, 23, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+      z-index: 60;
+      text-align: center;
+      max-width: min(92vw, 520px);
+      font-size: clamp(0.98rem, 2.5vw, 1.08rem);
+      letter-spacing: 0.2px;
+    }
+
+    .lock-popup.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      animation: popupPulse 0.45s ease;
+    }
+
+    @keyframes popupPulse {
+      0% { transform: translateX(-50%) translateY(-8px) scale(0.95); }
+      60% { transform: translateX(-50%) translateY(0) scale(1.03); }
+      100% { transform: translateX(-50%) translateY(0) scale(1); }
+    }
+
+    .proposal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 4, 11, 0.66);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 80;
+      padding: 14px;
+    }
+
+    .proposal-overlay.active {
+      display: flex;
+    }
+
+    .proposal-card {
+      position: relative;
+      width: min(560px, 100%);
+      border-radius: 20px;
+      background: linear-gradient(150deg, #fff6fa 0%, #ffe0ec 100%);
+      border: 1px solid rgba(173, 36, 87, 0.26);
+      box-shadow: 0 18px 44px rgba(28, 4, 14, 0.42);
+      padding: 18px 16px 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .proposal-heart {
+      font-size: 2.6rem;
+      line-height: 1;
+      margin: 4px 0 8px;
+      color: #ca245d;
+    }
+
+    .proposal-names {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 800;
+      color: #7c173d;
+      margin-bottom: 4px;
+    }
+
+    .proposal-question {
+      margin: 6px 0 14px;
+      font-size: clamp(1rem, 3.2vw, 1.25rem);
+      font-weight: 700;
+      color: #6b1535;
+    }
+
+    .proposal-actions {
+      position: relative;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .proposal-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .proposal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .proposal-btn.yes {
+      background: linear-gradient(145deg, #e63976, #b40f4f);
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(165, 19, 69, 0.28);
+    }
+
+    .proposal-btn.no {
+      background: #fff;
+      color: #7a173b;
+      border: 1px solid rgba(171, 39, 88, 0.4);
+      box-shadow: 0 6px 13px rgba(52, 8, 24, 0.16);
+      position: relative;
+    }
+
+    .proposal-result {
+      margin-top: 14px;
+      font-weight: 800;
+      color: #94184a;
+      min-height: 24px;
+    }
+
+    .proposal-close {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #fff;
+      color: #8a1a45;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+      z-index: 2;
+    }
+
+    .proposal-blast-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .page {
+      width: min(760px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(255, 249, 251, 0.95), rgba(255, 230, 238, 0.9));
+      padding: 18px 18px 22px;
+      position: relative;
+      box-shadow: 0 18px 44px rgba(24, 5, 12, 0.4);
+    }
+
+    .paper-blast-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    .paper-piece {
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      width: var(--size, 10px);
+      height: calc(var(--size, 10px) * 0.6);
+      border-radius: 2px;
+      background: var(--color, #ff4b84);
+      opacity: 0.95;
+      transform: translate(-50%, -50%) rotate(0deg);
+      animation: paperBlast var(--duration, 1200ms) ease-out forwards;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes paperBlast {
+      to {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) rotate(var(--rot, 180deg));
+        opacity: 0;
+      }
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      border: none;
+      background: #fff;
+      color: #8a1a45;
+      font-size: 1.2rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .page h2 {
+      margin: 0;
+      color: #7d173d;
+      font-size: clamp(1.25rem, 3vw, 1.9rem);
+    }
+
+    .page .date-label {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      color: #8f2450;
+      font-weight: 600;
+    }
+
+    .page p {
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .popup-gallery-wrap {
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 14px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .popup-gallery {
+      display: flex;
+      gap: 8px;
+      width: max-content;
+      animation: popupScroll 20s linear infinite;
+    }
+
+    .popup-gallery img {
+      width: 118px;
+      height: 86px;
+      object-fit: contain;
+      object-position: center;
+      background: #fff3f8;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 10px rgba(122, 20, 56, 0.18);
+    }
+
+    .popup-gallery img.is-portrait {
+      width: 86px;
+      height: 118px;
+    }
+
+    .popup-gallery img.is-landscape {
+      width: 126px;
+      height: 84px;
+    }
+
+    @keyframes popupScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .flower-wrap {
+      margin: 18px auto 8px;
+      width: 140px;
+      height: 220px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: bloom 1.1s ease;
+    }
+
+    @keyframes bloom {
+      from { transform: scale(0.6) rotateY(40deg); opacity: 0; }
+      to { transform: scale(1) rotateY(0deg); opacity: 1; }
+    }
+
+    .stem {
+      position: absolute;
+      left: 66px;
+      top: 78px;
+      width: 8px;
+      height: 125px;
+      background: linear-gradient(#2c8b4b, #1e6a38);
+      border-radius: 8px;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 34px;
+      height: 18px;
+      background: linear-gradient(#39a859, #227a42);
+      border-radius: 100% 0;
+      top: 130px;
+      left: 33px;
+      transform: rotate(-25deg);
+    }
+
+    .leaf.right {
+      left: 72px;
+      transform: scaleX(-1) rotate(-25deg);
+    }
+
+    .petal {
+      position: absolute;
+      width: 46px;
+      height: 54px;
+      background: radial-gradient(circle at 35% 30%, #ff9dbf, #e23774 72%);
+      border-radius: 50% 50% 42% 42%;
+      top: 36px;
+      left: 47px;
+      transform-origin: 50% 100%;
+      box-shadow: inset -4px -6px 10px rgba(118, 8, 50, 0.35);
+    }
+
+    .p1 { transform: rotate(0deg) translateY(-4px); }
+    .p2 { transform: rotate(55deg); }
+    .p3 { transform: rotate(110deg); }
+    .p4 { transform: rotate(165deg); }
+    .p5 { transform: rotate(220deg); }
+    .p6 { transform: rotate(275deg); }
+
+    .center-bud {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      top: 52px;
+      left: 57px;
+      background: radial-gradient(circle at 40% 35%, #ffd57a, #d18a00 75%);
+      box-shadow: 0 0 10px rgba(255, 181, 59, 0.75);
+    }
+
+    .bottom-note {
+      margin-top: 12px;
+      font-weight: 700;
+      color: #8d1d49;
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .final-proposal {
+      margin-top: 12px;
+      padding: 14px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(171, 39, 88, 0.28);
+      text-align: center;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-proposal.show {
+      display: block;
+    }
+
+    .final-proposal-title {
+      font-size: clamp(1rem, 2.8vw, 1.2rem);
+      font-weight: 800;
+      color: #7c173d;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(157, 30, 79, 0.22);
+    }
+
+    .final-proposal-question {
+      margin-top: 6px;
+      font-size: clamp(0.98rem, 2.6vw, 1.1rem);
+      font-weight: 700;
+      color: #6a1534;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-style: italic;
+      letter-spacing: 0.3px;
+    }
+
+    .final-proposal-actions {
+      margin-top: 10px;
+      position: relative;
+      min-height: 52px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .final-proposal-result {
+      margin-top: 10px;
+      font-weight: 800;
+      color: #94184a;
+      min-height: 22px;
+    }
+
+    .final-proposal-result.accepted {
+      font-size: clamp(1.2rem, 3.4vw, 1.75rem);
+      font-weight: 900;
+      font-family: "Palatino Linotype", "Book Antiqua", "Georgia", serif;
+      font-style: italic;
+      color: #b01251;
+      text-align: center;
+      line-height: 1.45;
+      text-shadow: 0 4px 16px rgba(176, 18, 81, 0.28);
+      letter-spacing: 0.55px;
+      background: linear-gradient(120deg, #b01251 10%, #e12d77 52%, #8f0d40 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page.final-gift-open .popup-gallery-wrap {
+      overflow: visible;
+    }
+
+    .page.final-gift-open #pageMessage {
+      text-align: center;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: clamp(1.35rem, 3.2vw, 1.9rem);
+      font-weight: 700;
+      line-height: 1.5;
+      color: #6f1537;
+    }
+
+    .page.final-gift-open .popup-gallery {
+      animation: none;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      transform: none;
+    }
+
+    .page.final-gift-open .popup-gallery.heart-layout {
+      position: relative;
+      width: min(520px, 100%);
+      height: clamp(280px, 72vw, 390px);
+      margin: 0 auto;
+      display: block;
+    }
+
+    .page.final-gift-open .popup-gallery.heart-layout img {
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(122, 20, 56, 0.22);
+      border: 2px solid rgba(255, 255, 255, 0.92);
+      background: #fff;
+      transition: transform 0.2s ease;
+    }
+
+    .final-heart-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 4;
+    }
+
+    .final-heart {
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(194, 19, 84, 0.8);
+      font-size: 14px;
+      line-height: 1;
+      animation: floatSoftHeart 2.6s ease-out forwards;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.65);
+    }
+
+    @keyframes floatSoftHeart {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 0) scale(0.7);
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--drift, 0px)), -120px) scale(1.15);
+      }
+    }
+
+    .rose-bouquet {
+      display: none;
+      width: min(360px, 94%);
+      height: auto;
+      max-height: 300px;
+      object-fit: contain;
+      object-position: center;
+      border-radius: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 24px rgba(100, 13, 43, 0.28);
+      margin: 16px auto 8px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 14px 10px 24px;
+      }
+
+      .hero {
+        padding: 14px 12px;
+        border-radius: 18px;
+      }
+
+      h1 {
+        font-size: clamp(1.2rem, 6vw, 1.7rem);
+      }
+
+      .hero p {
+        font-size: 0.9rem;
+      }
+
+      .gift-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .photo-strip img {
+        width: 145px;
+        height: 96px;
+      }
+
+      .gift-box {
+        padding: 14px;
+      }
+
+      .gift-visual {
+        height: 98px;
+      }
+
+      .overlay {
+        padding: 8px;
+      }
+
+      .page {
+        width: 100%;
+        max-height: 94vh;
+        padding: 14px 12px 16px;
+        border-radius: 18px;
+      }
+
+      .close-btn {
+        right: 8px;
+        top: 8px;
+        width: 32px;
+        height: 32px;
+      }
+
+      .page h2 {
+        font-size: clamp(1.1rem, 5vw, 1.35rem);
+        padding-right: 38px;
+      }
+
+      .page .date-label {
+        font-size: 0.86rem;
+      }
+
+      .popup-gallery img {
+        width: 96px;
+        height: 72px;
+      }
+
+      .popup-gallery img.is-portrait {
+        width: 72px;
+        height: 96px;
+      }
+
+      .popup-gallery img.is-landscape {
+        width: 104px;
+        height: 70px;
+      }
+
+      .page.final-gift-open .popup-gallery.heart-layout {
+        width: min(330px, 100%);
+        height: 280px;
+      }
+
+      .page.final-gift-open .popup-gallery.heart-layout img {
+        width: 56px;
+        height: 56px;
+        border-radius: 10px;
+      }
+
+      .rose-bouquet {
+        width: min(320px, 100%);
+        max-height: 240px;
+      }
+
+      .final-proposal {
+        padding: 12px 10px;
+      }
+
+      .final-proposal-title {
+        font-size: clamp(0.95rem, 4.8vw, 1.12rem);
+      }
+
+      .final-proposal-question {
+        font-size: clamp(0.95rem, 4.6vw, 1.1rem);
+      }
+
+      .proposal-btn {
+        padding: 9px 16px;
+        font-size: 0.95rem;
+      }
+
+      .final-proposal-result.accepted {
+        font-size: clamp(1.05rem, 5.2vw, 1.4rem);
+      }
+
+      .lock-popup {
+        top: 10px;
+        max-width: calc(100vw - 14px);
+        padding: 10px 12px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .page.final-gift-open .popup-gallery.heart-layout {
+        width: min(290px, 100%);
+        height: 240px;
+      }
+
+      .page.final-gift-open .popup-gallery.heart-layout img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .page.final-gift-open #pageMessage {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts-layer" id="hearts"></div>
+
+  <main class="container">
+    <section class="hero">
+      <h1>A Valentine Journey of Love</h1>
+      <p>Every gift carries my heart, until I ask you one beautiful question.</p>
+    </section>
+
+    <section class="gift-grid" id="giftGrid"></section>
+
+    <section class="photo-strip-wrap">
+      <div class="photo-strip" id="photoStrip"></div>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <article class="page" id="page">
+      <button class="close-btn" id="closeBtn" aria-label="Close">x</button>
+      <h2 id="pageTitle"></h2>
+      <div class="date-label" id="pageDate"></div>
+      <img
+        id="roseBouquet"
+        class="rose-bouquet"
+        src="rose-bouquet.jpg"
+        alt="Red rose bouquet"
+      />
+      <div class="paper-blast-layer" id="blastLayer"></div>
+      <div class="flower-wrap" id="flowerArt" aria-hidden="true">
+        <div class="petal p1"></div>
+        <div class="petal p2"></div>
+        <div class="petal p3"></div>
+        <div class="petal p4"></div>
+        <div class="petal p5"></div>
+        <div class="petal p6"></div>
+        <div class="center-bud"></div>
+        <div class="stem"></div>
+        <div class="leaf"></div>
+        <div class="leaf right"></div>
+      </div>
+      <p id="pageMessage"></p>
+      <div class="popup-gallery-wrap">
+        <div class="final-heart-layer" id="galleryHeartLayer"></div>
+        <div class="popup-gallery" id="popupGallery"></div>
+      </div>
+      <div class="bottom-note" id="pageWish"></div>
+      <div class="final-proposal" id="finalProposal">
+        <div class="final-heart-layer" id="finalProposalHeartLayer"></div>
+        <div class="final-proposal-title">&#10084; Suresh Weds Tamil Selvi &#10084;</div>
+        <div class="final-proposal-question">&#10084; Will you marry me? &#10084;</div>
+        <div class="final-proposal-actions" id="finalProposalActions">
+          <button class="proposal-btn yes" id="finalYesBtn">Yes</button>
+          <button class="proposal-btn no" id="finalNoBtn">No</button>
+        </div>
+        <div class="final-proposal-result" id="finalProposalResult"></div>
+      </div>
+    </article>
+  </div>
+  <div class="lock-popup" id="lockPopup"></div>
+  <div class="proposal-overlay" id="proposalOverlay">
+    <div class="proposal-card" id="proposalCard">
+      <button class="proposal-close" id="proposalCloseBtn" aria-label="Close">x</button>
+      <div class="proposal-blast-layer" id="proposalBlastLayer"></div>
+      <div class="proposal-heart">&#10084;</div>
+      <div class="proposal-names">Suresh Weds Tamil Selvi</div>
+      <div class="proposal-question">Will you marry me?</div>
+      <div class="proposal-actions" id="proposalActions">
+        <button class="proposal-btn yes" id="proposalYesBtn">Yes</button>
+        <button class="proposal-btn no" id="proposalNoBtn">No</button>
+      </div>
+      <div class="proposal-result" id="proposalResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const today = new Date();
+    const start = new Date(today.getFullYear(), 1, 7, 0, 0, 0, 0);
+
+    const days = [
+      {
+        title: "Day 1 - Rose Day",
+        message: "Happy Rose Day, my love. Like this rose, my heart keeps blooming for you every day.",
+        wish: "A rose for you, and all my love too."
+      },
+      {
+        title: "Day 2 - Propose Day",
+        message: "You are my favorite person, my safest place, and my sweetest future.",
+        wish: "I choose you today, tomorrow, and always."
+      },
+      {
+        title: "Day 3 - Chocolate Day",
+        message: "Life with you tastes better than chocolate, because your smile is the sweetest thing ever.",
+        wish: "Sweet moments, sweeter memories, sweetest us."
+      },
+      {
+        title: "Day 4 - Teddy Day",
+        message: "Whenever you miss me, imagine this warm teddy hug wrapped around you.",
+        wish: "Soft hugs and endless comfort for my love."
+      },
+      {
+        title: "Day 5 - Promise Day",
+        message: "I promise to respect you, support you, and stand beside you in every season.",
+        wish: "My promise: loyalty, care, and forever love."
+      },
+      {
+        title: "Day 6 - Hug Day",
+        message: "One real hug from you can heal a long day and make everything feel right again.",
+        wish: "A thousand hugs for the one I adore."
+      },
+      {
+        title: "Day 7 - Kiss Day",
+        message: "A kiss from you is magic for my soul and peace for my heart.",
+        wish: "One kiss, endless love."
+      },
+      {
+        title: "Day 8 - Valentine Day",
+        message: "Happy Valentine Day, my soulmate. Thank you for being the best part of my life.",
+        wish: "Forever yours. Forever us."
+      },
+      {
+        title: "Final Gift Card",
+        message: "This is my final surprise for you, from all my heart.",
+        wish: "Open this and say yes to forever."
+      }
+    ];
+
+    const giftGrid = document.getElementById("giftGrid");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+    const lockPopup = document.getElementById("lockPopup");
+    const blastLayer = document.getElementById("blastLayer");
+    const popupGallery = document.getElementById("popupGallery");
+    const proposalOverlay = document.getElementById("proposalOverlay");
+    const proposalActions = document.getElementById("proposalActions");
+    const proposalYesBtn = document.getElementById("proposalYesBtn");
+    const proposalNoBtn = document.getElementById("proposalNoBtn");
+    const proposalResult = document.getElementById("proposalResult");
+    const proposalCloseBtn = document.getElementById("proposalCloseBtn");
+    const proposalBlastLayer = document.getElementById("proposalBlastLayer");
+
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDate = document.getElementById("pageDate");
+    const pageMessage = document.getElementById("pageMessage");
+    const pageWish = document.getElementById("pageWish");
+    const page = document.getElementById("page");
+    const flowerArt = document.getElementById("flowerArt");
+    const roseBouquet = document.getElementById("roseBouquet");
+    const finalProposal = document.getElementById("finalProposal");
+    const finalProposalActions = document.getElementById("finalProposalActions");
+    const finalYesBtn = document.getElementById("finalYesBtn");
+    const finalNoBtn = document.getElementById("finalNoBtn");
+    const finalProposalResult = document.getElementById("finalProposalResult");
+    const galleryHeartLayer = document.getElementById("galleryHeartLayer");
+    const finalProposalHeartLayer = document.getElementById("finalProposalHeartLayer");
+    let lockPopupTimer;
+    let finalBlastTimer = null;
+    let finalHeartTimers = [];
+    const previewUnlockAll = false;
+    const totalLocalImages = 16;
+    const localImages = Array.from({ length: totalLocalImages }, (_, i) => `${i + 1}.jpeg`);
+    const dayImages = [
+      "rose-bouquet.jpg",
+      "prpose.jpeg",
+      "choclate.jpeg",
+      "teddy.jpeg",
+      "promiss.jpeg",
+      "hug.jpeg",
+      "kiss.jpeg",
+      "valientesday.jpeg",
+      "final.jpeg"
+    ];
+    const openedGiftKey = "openedGifts";
+    const openedGifts = new Set(
+      JSON.parse(localStorage.getItem(openedGiftKey) || "[]").filter((n) => Number.isInteger(n))
+    );
+
+    const formatDate = (d) =>
+      d.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+
+    function formatCountdown(ms) {
+      if (ms <= 0) return "Ready to open now";
+
+      const totalSeconds = Math.floor(ms / 1000);
+      const daysLeft = Math.floor(totalSeconds / 86400);
+      const hoursLeft = Math.floor((totalSeconds % 86400) / 3600);
+      const minsLeft = Math.floor((totalSeconds % 3600) / 60);
+      const secsLeft = totalSeconds % 60;
+      return `${daysLeft}d ${hoursLeft}h ${minsLeft}m ${secsLeft}s left`;
+    }
+
+    function getUnlockDate(index) {
+      const isFinalGift = index === days.length - 1;
+      if (isFinalGift) {
+        return new Date(start.getFullYear(), 1, 14, 0, 0, 0, 0);
+      }
+      const d = new Date(start);
+      d.setDate(start.getDate() + index);
+      return d;
+    }
+
+    window.showLockPopup = function showLockPopup(message = "This card is locked right now.") {
+      if (!lockPopup) {
+        console.error("Missing #lockPopup element. Cannot show lock message.");
+        return;
+      }
+      lockPopup.textContent = `[LOCKED] ${message}`;
+      lockPopup.classList.add("active");
+      clearTimeout(lockPopupTimer);
+      lockPopupTimer = setTimeout(() => {
+        lockPopup.classList.remove("active");
+      }, 3600);
+    }
+
+    function createPaperBlast(targetLayer = blastLayer, pieceCount = 56, spread = "center") {
+      const colors = ["#ff4b84", "#ffd166", "#ff8fab", "#80ed99", "#7bdff2", "#ffffff"];
+      targetLayer.innerHTML = "";
+
+      for (let i = 0; i < pieceCount; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "paper-piece";
+
+        const size = 6 + Math.random() * 8;
+        const isFullSpread = spread === "full";
+        const dx = isFullSpread ? -160 + Math.random() * 320 : -240 + Math.random() * 480;
+        const dy = isFullSpread ? -180 + Math.random() * 260 : -250 + Math.random() * 320;
+        const rot = -360 + Math.random() * 720;
+        const duration = 900 + Math.random() * 600;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        if (isFullSpread) {
+          piece.style.left = `${5 + Math.random() * 90}%`;
+          piece.style.top = `${8 + Math.random() * 84}%`;
+        } else {
+          piece.style.left = "50%";
+          piece.style.top = "44%";
+        }
+        piece.style.setProperty("--size", `${size}px`);
+        piece.style.setProperty("--dx", `${dx}px`);
+        piece.style.setProperty("--dy", `${dy}px`);
+        piece.style.setProperty("--rot", `${rot}deg`);
+        piece.style.setProperty("--duration", `${duration}ms`);
+        piece.style.setProperty("--color", color);
+        targetLayer.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        targetLayer.innerHTML = "";
+      }, 1700);
+    }
+
+    function stopFinalBlast() {
+      if (finalBlastTimer) {
+        clearInterval(finalBlastTimer);
+        finalBlastTimer = null;
+      }
+    }
+
+    function spawnSoftHeart(layer) {
+      if (!layer) return;
+      const heart = document.createElement("span");
+      heart.className = "final-heart";
+      heart.textContent = "\u2665";
+      heart.style.left = `${8 + Math.random() * 84}%`;
+      heart.style.fontSize = `${10 + Math.random() * 16}px`;
+      heart.style.setProperty("--drift", `${-36 + Math.random() * 72}px`);
+      layer.appendChild(heart);
+      setTimeout(() => heart.remove(), 2700);
+    }
+
+    function stopFinalDecorHearts() {
+      finalHeartTimers.forEach((timer) => clearInterval(timer));
+      finalHeartTimers = [];
+      galleryHeartLayer.innerHTML = "";
+      finalProposalHeartLayer.innerHTML = "";
+    }
+
+    function startFinalDecorHearts() {
+      stopFinalDecorHearts();
+      finalHeartTimers.push(setInterval(() => spawnSoftHeart(galleryHeartLayer), 220));
+      finalHeartTimers.push(setInterval(() => spawnSoftHeart(finalProposalHeartLayer), 260));
+    }
+
+    function startFinalBlast() {
+      stopFinalBlast();
+      createPaperBlast(blastLayer, 120, "full");
+      finalBlastTimer = setInterval(() => {
+        if (!overlay.classList.contains("active") || !page.classList.contains("final-gift-open")) {
+          stopFinalBlast();
+          return;
+        }
+        createPaperBlast(blastLayer, 120, "full");
+      }, 950);
+    }
+
+    function moveNoButton() {
+      const maxX = Math.max(0, proposalActions.clientWidth - proposalNoBtn.offsetWidth - 6);
+      const maxY = Math.max(0, proposalActions.clientHeight - proposalNoBtn.offsetHeight - 6);
+      const x = Math.floor(Math.random() * (maxX + 1));
+      const y = Math.floor(Math.random() * (maxY + 1));
+      proposalNoBtn.style.position = "absolute";
+      proposalNoBtn.style.left = `${x}px`;
+      proposalNoBtn.style.top = `${y}px`;
+    }
+
+    function moveFinalNoButton() {
+      const parent = finalNoBtn.parentElement;
+      if (!parent) return;
+      const maxX = Math.max(0, parent.clientWidth - finalNoBtn.offsetWidth - 6);
+      const maxY = Math.max(0, parent.clientHeight - finalNoBtn.offsetHeight - 6);
+      const x = Math.floor(Math.random() * (maxX + 1));
+      const y = Math.floor(Math.random() * (maxY + 1));
+      finalNoBtn.style.position = "absolute";
+      finalNoBtn.style.left = `${x}px`;
+      finalNoBtn.style.top = `${y}px`;
+    }
+
+    function openProposalModal() {
+      proposalResult.textContent = "";
+      proposalNoBtn.style.position = "relative";
+      proposalNoBtn.style.left = "auto";
+      proposalNoBtn.style.top = "auto";
+      proposalOverlay.classList.add("active");
+    }
+
+    function getShuffledImages(list) {
+      const clone = [...list];
+      for (let i = clone.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [clone[i], clone[j]] = [clone[j], clone[i]];
+      }
+      return clone;
+    }
+
+    function renderPopupGallery(index) {
+      const shuffled = getShuffledImages(localImages);
+      const isFinalGift = index === days.length - 1;
+      const selected = shuffled.slice(index, index + 10);
+      const gallerySet = selected.length ? selected : shuffled.slice(0, 10);
+      const finalCount = 14;
+      const finalSet = Array.from({ length: finalCount }, (_, i) => shuffled[i % shuffled.length]);
+      const displaySet = isFinalGift ? finalSet : [...gallerySet, ...gallerySet];
+      popupGallery.innerHTML = "";
+      popupGallery.classList.toggle("heart-layout", isFinalGift);
+      displaySet.forEach((url, i) => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = `Love day ${index + 1} memory ${i + 1}`;
+        img.loading = "lazy";
+        applyOrientationClass(img);
+        if (isFinalGift) {
+          img.addEventListener("load", () => requestAnimationFrame(layoutFinalHeartGallery), { once: true });
+        }
+        popupGallery.appendChild(img);
+      });
+      if (isFinalGift) {
+        requestAnimationFrame(layoutFinalHeartGallery);
+      }
+    }
+
+    function layoutFinalHeartGallery() {
+      const imgs = Array.from(popupGallery.querySelectorAll("img"));
+      if (!imgs.length || !popupGallery.classList.contains("heart-layout")) return;
+
+      const rect = popupGallery.getBoundingClientRect();
+      const width = rect.width || 520;
+      const height = rect.height || 390;
+      const cx = width * 0.5;
+      const cy = height * 0.54;
+      const sampleSize = imgs[0]?.offsetWidth || 56;
+      const safeWidth = Math.max(120, width - sampleSize - 14);
+      const safeHeight = Math.max(120, height - sampleSize - 18);
+      const scale = Math.min(safeWidth, safeHeight) * 0.48;
+
+      imgs.forEach((img, i) => {
+        const t = (Math.PI * 2 * i) / imgs.length;
+        const hx = 16 * Math.pow(Math.sin(t), 3);
+        const hy = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+        const x = cx + hx * (scale / 18);
+        const y = cy - hy * (scale / 18);
+        const rotate = ((i % 3) - 1) * 6;
+        img.style.left = `${x}px`;
+        img.style.top = `${y}px`;
+        img.style.transform = `translate(-50%, -50%) rotate(${rotate}deg)`;
+      });
+    }
+
+    function applyOrientationClass(img) {
+      function setClass() {
+        img.classList.remove("is-portrait", "is-landscape");
+        if (!img.naturalWidth || !img.naturalHeight) return;
+        if (img.naturalHeight > img.naturalWidth) {
+          img.classList.add("is-portrait");
+        } else {
+          img.classList.add("is-landscape");
+        }
+      }
+
+      img.addEventListener("load", setClass, { once: true });
+      if (img.complete) setClass();
+    }
+
+    function renderGifts() {
+      giftGrid.innerHTML = "";
+      const now = new Date();
+
+      days.forEach((day, index) => {
+        const unlockDate = getUnlockDate(index);
+        const isFinalGift = index === days.length - 1;
+        const dayEightOpened = openedGifts.has(7);
+        const unlockedByDate = previewUnlockAll || now >= unlockDate;
+        const unlocked = isFinalGift ? unlockedByDate && dayEightOpened : unlockedByDate;
+
+        const btn = document.createElement("button");
+        btn.className = `gift-box ${unlocked ? "" : "locked"}`.trim();
+        const diffMs = unlockDate - now;
+
+        btn.innerHTML = `
+          <div class="gift-visual">
+            <div class="gift-emoji">&#127873;</div>
+            <div class="gift-lock-overlay">
+              <span class="lock-icon">&#128274;</span>
+              <span>Locked</span>
+            </div>
+          </div>
+          <div class="gift-title">${day.title}</div>
+          <div class="gift-status">${unlocked ? "Unlocked - Open Gift" : "Locked"}</div>
+          <div class="gift-countdown">${formatCountdown(diffMs)}</div>
+        `;
+
+        const onGiftOpen = () => {
+          const nowAtClick = new Date();
+          const latestDayEightOpened = openedGifts.has(7);
+          const latestUnlockedByDate = previewUnlockAll || nowAtClick >= unlockDate;
+          const latestUnlocked = isFinalGift
+            ? latestUnlockedByDate && latestDayEightOpened
+            : latestUnlockedByDate;
+
+          if (!latestUnlocked) {
+            if (isFinalGift && !latestDayEightOpened) {
+              showLockPopup("Please open Day 8 first, then your final gift card will unlock.");
+            } else {
+              showLockPopup("Just a few more days, my dear wife. Please wait, your surprise is coming.");
+            }
+            return;
+          }
+
+          pageTitle.textContent = day.title;
+          pageDate.textContent = `Opened on ${formatDate(new Date())}`;
+          pageMessage.textContent = day.message;
+          pageWish.textContent = day.wish;
+          renderPopupGallery(index);
+          roseBouquet.onerror = () => {
+            roseBouquet.style.display = "none";
+            flowerArt.style.display = "block";
+            roseBouquet.onerror = null;
+          };
+          roseBouquet.src = dayImages[index] || "rose-bouquet.jpg";
+          roseBouquet.alt = `${day.title} image`;
+          roseBouquet.style.display = "block";
+          flowerArt.style.display = "none";
+          finalProposal.classList.toggle("show", isFinalGift);
+          page.classList.toggle("final-gift-open", isFinalGift);
+          finalProposalResult.textContent = "";
+          finalProposalResult.classList.remove("accepted");
+          finalProposalActions.style.display = "flex";
+          stopFinalBlast();
+          if (isFinalGift) startFinalDecorHearts();
+          else stopFinalDecorHearts();
+          finalNoBtn.style.position = "relative";
+          finalNoBtn.style.left = "auto";
+          finalNoBtn.style.top = "auto";
+          createPaperBlast();
+          overlay.classList.add("active");
+          openedGifts.add(index);
+          localStorage.setItem(openedGiftKey, JSON.stringify([...openedGifts]));
+        };
+
+        btn.addEventListener("click", onGiftOpen);
+        btn.addEventListener("pointerdown", (e) => {
+          if (e.pointerType !== "mouse") {
+            e.preventDefault();
+            onGiftOpen();
+          }
+        });
+
+        giftGrid.appendChild(btn);
+      });
+    }
+
+    function renderPhotos() {
+      const strip = document.getElementById("photoStrip");
+      const shuffled = getShuffledImages(localImages);
+      const doubled = [...shuffled, ...shuffled];
+
+      doubled.forEach((url, i) => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = `Love memory ${i + 1}`;
+        img.loading = "lazy";
+        applyOrientationClass(img);
+        strip.appendChild(img);
+      });
+    }
+
+    function startHearts() {
+      const hearts = document.getElementById("hearts");
+
+      setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = "\u2665";
+        h.style.left = `${Math.random() * 100}%`;
+        h.style.fontSize = `${12 + Math.random() * 28}px`;
+        h.style.animationDuration = `${4 + Math.random() * 5}s`;
+        hearts.appendChild(h);
+
+        setTimeout(() => h.remove(), 9500);
+      }, 260);
+    }
+
+    closeBtn.addEventListener("click", () => {
+      overlay.classList.remove("active");
+      stopFinalBlast();
+      stopFinalDecorHearts();
+    });
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove("active");
+        stopFinalBlast();
+        stopFinalDecorHearts();
+      }
+    });
+    proposalCloseBtn.addEventListener("click", () => proposalOverlay.classList.remove("active"));
+    proposalOverlay.addEventListener("click", (e) => {
+      if (e.target === proposalOverlay) proposalOverlay.classList.remove("active");
+    });
+    proposalNoBtn.addEventListener("mouseenter", moveNoButton);
+    proposalNoBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+    proposalNoBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+    proposalYesBtn.addEventListener("click", () => {
+      createPaperBlast(proposalBlastLayer, 84);
+      proposalResult.textContent = "i will marry you as soon as possible dear";
+    });
+    function evadeFinalNo(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      moveFinalNoButton();
+      setTimeout(moveFinalNoButton, 40);
+    }
+
+    finalNoBtn.addEventListener("click", evadeFinalNo);
+    finalNoBtn.addEventListener("mouseenter", evadeFinalNo);
+    finalNoBtn.addEventListener("pointerdown", evadeFinalNo);
+    finalNoBtn.addEventListener("focus", evadeFinalNo);
+    finalNoBtn.addEventListener("touchstart", (e) => {
+      evadeFinalNo(e);
+    }, { passive: false });
+    finalYesBtn.addEventListener("click", () => {
+      startFinalBlast();
+      finalProposalResult.textContent = "Your proposal is accepted. I will marry you as soon as possible, my dear.";
+      finalProposalResult.classList.add("accepted");
+      finalProposalActions.style.display = "none";
+    });
+    window.addEventListener("resize", () => {
+      if (page.classList.contains("final-gift-open")) {
+        requestAnimationFrame(layoutFinalHeartGallery);
+      }
+    });
+
+    renderPhotos();
+    renderGifts();
+    startHearts();
+
+    setInterval(renderGifts, 1000);
+  </script>
+</body>
+</html>
