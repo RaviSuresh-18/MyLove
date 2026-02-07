@@ -1043,6 +1043,7 @@
     const finalProposalResult = document.getElementById("finalProposalResult");
     const galleryHeartLayer = document.getElementById("galleryHeartLayer");
     const finalProposalHeartLayer = document.getElementById("finalProposalHeartLayer");
+    let overlayOpenedAt = 0;
     let lockPopupTimer;
     let finalBlastTimer = null;
     let finalHeartTimers = [];
@@ -1366,6 +1367,7 @@
           finalNoBtn.style.left = "auto";
           finalNoBtn.style.top = "auto";
           createPaperBlast();
+          overlayOpenedAt = Date.now();
           overlay.classList.add("active");
           openedGifts.add(index);
           localStorage.setItem(openedGiftKey, JSON.stringify([...openedGifts]));
@@ -1420,6 +1422,7 @@
       stopFinalDecorHearts();
     });
     overlay.addEventListener("click", (e) => {
+      if (Date.now() - overlayOpenedAt < 450) return;
       if (e.target === overlay) {
         overlay.classList.remove("active");
         stopFinalBlast();
